@@ -226,6 +226,9 @@ body {
    ========================================================= */
 .loader { color: var(--accent); }
 
+/* Kokoruutunäkymän loader isompana (esikatselut paneelissa pysyvät ennallaan) */
+.stage .loader { transform: scale(1.7); }
+
 /* 1. Rengas (ring) */
 .ld-ring {
   width: 68px; height: 68px;
