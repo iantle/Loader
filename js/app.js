@@ -113,9 +113,14 @@ function buildGrid() {
     cell.setAttribute("aria-label", def.name);
     cell.title = def.name;
 
+    // Pienennys tehdään kääreessä, jottei se törmää loaderin omaan
+    // transform-animaatioon (pyörivät renkaat / kiertorata).
     const preview = document.createElement("div");
-    preview.className = "preview loader ld-" + key;
-    preview.innerHTML = def.html;
+    preview.className = "preview";
+    const inner = document.createElement("div");
+    inner.className = "loader ld-" + key;
+    inner.innerHTML = def.html;
+    preview.appendChild(inner);
     cell.appendChild(preview);
 
     cell.addEventListener("click", () => {
