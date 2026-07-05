@@ -1,0 +1,363 @@
+/* ---------- Perusasetukset & teema ---------- */
+:root {
+  --accent: #6366f1;
+  --bg: #0e0f16;
+  --fg: #f4f5fb;
+  --panel-bg: #17182233;
+  --panel-solid: #1b1d29;
+  --border: #ffffff1f;
+  --btn-bg: #ffffff14;
+  --btn-bg-hover: #ffffff26;
+  --shadow: 0 20px 60px #00000066;
+}
+
+:root[data-theme="light"] {
+  --bg: #f3f4fb;
+  --fg: #1b1d29;
+  --panel-solid: #ffffff;
+  --border: #1b1d2916;
+  --btn-bg: #1b1d290a;
+  --btn-bg-hover: #1b1d2914;
+  --shadow: 0 20px 60px #4b4f6626;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+/* ---------- Loaderin näyttämö ---------- */
+.stage {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+           env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* ---------- Asetusnappi ---------- */
+.settings-btn {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 14px);
+  right: calc(env(safe-area-inset-right) + 14px);
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--btn-bg);
+  color: var(--fg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  z-index: 30;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.settings-btn:hover { background: var(--btn-bg-hover); }
+.settings-btn:active { transform: scale(0.92); }
+.settings-btn svg { transition: transform 0.4s ease; }
+.settings-btn:hover svg { transform: rotate(45deg); }
+
+/* ---------- Overlay & paneeli ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #00000066;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 40;
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+.overlay.show { opacity: 1; }
+
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: min(360px, 88vw);
+  z-index: 50;
+  background: var(--panel-solid);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: calc(env(safe-area-inset-top) + 18px) 20px
+           calc(env(safe-area-inset-bottom) + 24px) 20px;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.panel.show { transform: translateX(0); }
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.panel-head h2 { margin: 0; font-size: 20px; font-weight: 700; }
+
+.close-btn {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border: none; border-radius: 12px;
+  background: var(--btn-bg);
+  color: var(--fg);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.close-btn:hover { background: var(--btn-bg-hover); }
+
+.setting-group { margin-bottom: 26px; }
+.setting-group h3 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+/* ---------- Teemavalitsin ---------- */
+.theme-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  background: var(--btn-bg);
+  border-radius: 14px;
+  padding: 6px;
+}
+.theme-opt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--fg);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.theme-opt.active {
+  background: var(--panel-solid);
+  box-shadow: 0 2px 10px #0000001f;
+}
+:root[data-theme="light"] .theme-opt.active {
+  background: #fff;
+  box-shadow: 0 2px 10px #4b4f6624;
+}
+
+/* ---------- Loader-ruudukko ---------- */
+.loader-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.loader-cell {
+  position: relative;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  background: var(--btn-bg);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+.loader-cell:active { transform: scale(0.94); }
+.loader-cell.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.loader-cell .preview {
+  transform: scale(0.42);
+}
+
+/* ---------- Väririvi ---------- */
+.color-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.color-dot {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.color-dot:active { transform: scale(0.9); }
+.color-dot.active {
+  box-shadow: 0 0 0 2px var(--panel-solid), 0 0 0 4px currentColor;
+}
+
+.hint {
+  font-size: 12px;
+  opacity: 0.5;
+  text-align: center;
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   LOADERIT — kaikki käyttävät --accent-väriä
+   ========================================================= */
+.loader { color: var(--accent); }
+
+/* 1. Rengas (ring) */
+.ld-ring {
+  width: 68px; height: 68px;
+  border: 7px solid color-mix(in srgb, currentColor 22%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+/* 2. Kolme pistettä */
+.ld-dots { display: flex; gap: 12px; }
+.ld-dots span {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: bounce 1.4s ease-in-out infinite;
+}
+.ld-dots span:nth-child(2) { animation-delay: 0.2s; }
+.ld-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+/* 3. Syke (pulse) */
+.ld-pulse {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 1.3s ease-in-out infinite;
+}
+
+/* 4. Palkit (bars) */
+.ld-bars { display: flex; gap: 7px; align-items: center; height: 60px; }
+.ld-bars span {
+  width: 9px;
+  height: 100%;
+  border-radius: 6px;
+  background: currentColor;
+  animation: bars 1.1s ease-in-out infinite;
+}
+.ld-bars span:nth-child(2) { animation-delay: 0.12s; }
+.ld-bars span:nth-child(3) { animation-delay: 0.24s; }
+.ld-bars span:nth-child(4) { animation-delay: 0.36s; }
+.ld-bars span:nth-child(5) { animation-delay: 0.48s; }
+
+/* 5. Kaksoisrengas */
+.ld-dual {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  border: 6px solid transparent;
+  border-top-color: currentColor;
+  border-bottom-color: currentColor;
+  animation: spin 1.1s cubic-bezier(0.4, 0.1, 0.6, 0.9) infinite;
+}
+
+/* 6. Väreily (ripple) */
+.ld-ripple { position: relative; width: 72px; height: 72px; }
+.ld-ripple span {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  border: 4px solid currentColor;
+  border-radius: 50%;
+  animation: ripple 1.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.ld-ripple span:nth-child(2) { animation-delay: -0.7s; }
+
+/* 7. Ruudukko (grid) */
+.ld-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 15px);
+  grid-gap: 6px;
+}
+.ld-grid span {
+  width: 15px; height: 15px;
+  border-radius: 4px;
+  background: currentColor;
+  animation: fade 1.3s ease-in-out infinite;
+}
+.ld-grid span:nth-child(1) { animation-delay: 0.0s; }
+.ld-grid span:nth-child(2) { animation-delay: 0.1s; }
+.ld-grid span:nth-child(3) { animation-delay: 0.2s; }
+.ld-grid span:nth-child(4) { animation-delay: 0.1s; }
+.ld-grid span:nth-child(5) { animation-delay: 0.2s; }
+.ld-grid span:nth-child(6) { animation-delay: 0.3s; }
+.ld-grid span:nth-child(7) { animation-delay: 0.2s; }
+.ld-grid span:nth-child(8) { animation-delay: 0.3s; }
+.ld-grid span:nth-child(9) { animation-delay: 0.4s; }
+
+/* 8. Kiertorata (orbit) */
+.ld-orbit { position: relative; width: 70px; height: 70px; animation: spin 1.4s linear infinite; }
+.ld-orbit span {
+  position: absolute;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.ld-orbit span:nth-child(1) { top: 0; left: 50%; margin-left: -8px; }
+.ld-orbit span:nth-child(2) { bottom: 0; left: 50%; margin-left: -8px; opacity: 0.45; }
+
+/* 9. Neliön kääntö (flip) */
+.ld-flip {
+  width: 60px; height: 60px;
+  border-radius: 10px;
+  background: currentColor;
+  animation: flip 1.4s ease-in-out infinite;
+}
+
+/* ---------- Keyframet ---------- */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.55; }
+  30% { transform: translateY(-20px); opacity: 1; }
+}
+@keyframes pulse {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+@keyframes bars {
+  0%, 100% { transform: scaleY(0.3); opacity: 0.5; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+@keyframes ripple {
+  0% { width: 0; height: 0; margin: 0; opacity: 1; }
+  100% { width: 72px; height: 72px; margin: -36px 0 0 -36px; opacity: 0; }
+}
+@keyframes fade {
+  0%, 70%, 100% { opacity: 0.2; transform: scale(0.8); }
+  35% { opacity: 1; transform: scale(1); }
+}
+@keyframes flip {
+  0% { transform: perspective(120px) rotateX(0) rotateY(0); }
+  50% { transform: perspective(120px) rotateX(-180deg) rotateY(0); }
+  100% { transform: perspective(120px) rotateX(-180deg) rotateY(-180deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader *, .loader { animation-duration: 2.4s !important; }
+}
