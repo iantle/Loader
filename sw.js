@@ -1,5 +1,8 @@
-/* Service worker — mahdollistaa asennuksen ja offline-käytön */
-const CACHE = "loader-app-v1";
+/* Service worker — mahdollistaa asennuksen ja offline-käytön.
+   Strategia: network-first. Haetaan aina tuorein verkosta ja päivitetään
+   välimuisti; offline-tilassa (tai jos verkko pettää) käytetään välimuistia.
+   Näin sivustopäivitykset näkyvät heti, kun laite on verkossa. */
+const CACHE = "loader-app-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -26,19 +29,22 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
+  const req = event.request;
+  if (req.method !== "GET") return;
+
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return (
-        cached ||
-        fetch(event.request)
-          .then((res) => {
-            const copy = res.clone();
-            caches.open(CACHE).then((cache) => cache.put(event.request, copy));
-            return res;
-          })
-          .catch(() => cached)
-      );
-    })
+    fetch(req)
+      .then((res) => {
+        // Talleta tuore vastaus välimuistiin offline-käyttöä varten
+        if (res && res.ok && res.type === "basic") {
+          const copy = res.clone();
+          caches.open(CACHE).then((cache) => cache.put(req, copy));
+        }
+        return res;
+      })
+      .catch(() =>
+        // Verkko ei käytettävissä → tarjoile välimuistista
+        caches.match(req).then((cached) => cached || caches.match("./index.html"))
+      )
   );
 });

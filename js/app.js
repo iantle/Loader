@@ -33,6 +33,7 @@ const DEFAULTS = {
   theme: "dark",
   loader: "ring",
   accent: "#6366f1",
+  scale: 1.7,
 };
 
 // ---------- Tallennus / lataus ----------
@@ -67,6 +68,8 @@ const panel = document.getElementById("panel");
 const overlay = document.getElementById("overlay");
 const settingsBtn = document.getElementById("settingsBtn");
 const closeBtn = document.getElementById("closeBtn");
+const sizeSlider = document.getElementById("sizeSlider");
+const sizeValue = document.getElementById("sizeValue");
 
 // ---------- Renderöinti ----------
 function renderLoader() {
@@ -92,6 +95,12 @@ function applyAccent() {
   document.querySelectorAll(".color-dot").forEach((dot) => {
     dot.classList.toggle("active", dot.dataset.color === settings.accent);
   });
+}
+
+function applyScale() {
+  root.style.setProperty("--loader-scale", settings.scale);
+  sizeSlider.value = settings.scale;
+  sizeValue.textContent = Math.round(settings.scale * 100) + " %";
 }
 
 // ---------- Ruudukon rakennus ----------
@@ -140,6 +149,15 @@ function buildColors() {
   });
 }
 
+// ---------- Kokosäädin ----------
+// Päivitä koko heti liu'utettaessa; tallenna kun säätö päättyy.
+sizeSlider.addEventListener("input", () => {
+  settings.scale = parseFloat(sizeSlider.value);
+  root.style.setProperty("--loader-scale", settings.scale);
+  sizeValue.textContent = Math.round(settings.scale * 100) + " %";
+});
+sizeSlider.addEventListener("change", saveSettings);
+
 // ---------- Teemanapit ----------
 document.querySelectorAll(".theme-opt").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -185,6 +203,7 @@ buildColors();
 renderLoader();
 applyTheme();
 applyAccent();
+applyScale();
 
 // ---------- Service worker (offline / asennettavuus) ----------
 if ("serviceWorker" in navigator) {

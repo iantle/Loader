@@ -213,6 +213,51 @@ body {
   box-shadow: 0 0 0 2px var(--panel-solid), 0 0 0 4px currentColor;
 }
 
+/* ---------- Kokosäädin ---------- */
+.size-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.size-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 6px;
+  background: var(--btn-bg);
+  outline: none;
+  cursor: pointer;
+}
+.size-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--panel-solid);
+  box-shadow: 0 1px 6px #00000033;
+  cursor: pointer;
+}
+.size-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--panel-solid);
+  box-shadow: 0 1px 6px #00000033;
+  cursor: pointer;
+}
+.size-value {
+  min-width: 46px;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
 .hint {
   font-size: 12px;
   opacity: 0.5;
@@ -226,8 +271,8 @@ body {
    ========================================================= */
 .loader { color: var(--accent); }
 
-/* Kokoruutunäkymän loader isompana (esikatselut paneelissa pysyvät ennallaan) */
-.stage .loader { transform: scale(1.7); }
+/* Kokoruutunäkymän loaderin koko säädetään asetuksista (esikatselut pysyvät ennallaan) */
+.stage .loader { transform: scale(var(--loader-scale, 1.7)); }
 
 /* 1. Rengas (ring) */
 .ld-ring {
