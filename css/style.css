@@ -271,8 +271,10 @@ body {
    ========================================================= */
 .loader { color: var(--accent); }
 
-/* Kokoruutunäkymän loaderin koko säädetään asetuksista (esikatselut pysyvät ennallaan) */
-.stage .loader { transform: scale(var(--loader-scale, 1.7)); }
+/* Kokoruutunäkymän loaderin koko säädetään asetuksista (esikatselut pysyvät ennallaan).
+   Skaalaus tehdään säiliössä, jotta se ei törmää loaderin omaan
+   transform-animaatioon (esim. renkaiden pyöriminen). */
+.stage { transform: scale(var(--loader-scale, 1.7)); }
 
 /* 1. Rengas (ring) */
 .ld-ring {
